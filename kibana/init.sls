@@ -132,7 +132,4 @@ kibana:
     - tar_options: xf
 
 # TODO:
-# * serve kibana openly
-# * restrict elasticsearch on localhost:9200
-# * proxy 0.0.0.0:9200 to localhost:9200 with auth
-# * point config.js to port 80 and not port 9200
+# * point config.js to port {{ kibana_port }} and not port 9200
