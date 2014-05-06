@@ -73,6 +73,14 @@ kibana_static_dir:
     - user: www-data
     - group: www-data
 
+kibana_config_js:
+  file.managed:
+    - name: '{{ kibana_wwwroot }}/config.js'
+    - template: jinja
+    - source: salt://kibana/config.js
+    - context:
+       kibana_port: {{ kibana_port }}
+
 elastic_htpasswd:
   file.managed:
     - name: {{ elastic_htpasswd_file }}
