@@ -15,3 +15,6 @@ Available States
 
 .. contents::
     :local:
+
+``kibana``
+----------
