@@ -40,7 +40,7 @@ elastic_repos_key:
       - file: elastic_repos_key
 
 {% for soft, repo in {
-  'elasticsearch': 'http://packages.elasticsearch.org/elasticsearch/0.90/debian',
+  'elasticsearch': 'http://packages.elasticsearch.org/elasticsearch/1.3/debian',
   'logstash': 'http://packages.elasticsearch.org/logstash/1.4/debian',
   }.iteritems() %}
 {{ soft }}_repo:
@@ -50,15 +50,8 @@ elastic_repos_key:
       - cmd: elastic_repos_key
     - contents: deb {{ repo }} stable main
 
-{{ soft }}_soft:
-  pkg.installed:
-    - name: {{ soft }}
-    - require:
-      - file: {{ soft }}_repo
-
 {% endfor %}
 {% endwith %}
-
 
 {% set kibana_port = salt['pillar.get']('kibana:httpport', '8080') %}
 {% set elastic_port = salt['pillar.get']('elasticsearch:httpport', '9200') %}
@@ -67,11 +60,31 @@ elastic_repos_key:
 {% set kibana_wwwroot = wwwhome + '/' + server_name + '/' %}
 {% set elastic_htpasswd_file = '/etc/nginx/elastic_passwd' %}
 
+
+elasticsearch_soft:
+  pkg.installed:
+    - name: elasticsearch
+    - require:
+      - file: elasticsearch_repo
+
+logstash_soft:
+  pkg.installed:
+    - name: logstash
+    - require:
+      - file: logstash_repo
+      - pkg: elasticsearch
+
 kibana_static_dir:
   file.directory:
     - name: {{ kibana_wwwroot }};
     - user: www-data
     - group: www-data
+    - makedirs: True
+
+nginx_sites_dir:
+  file.directory:
+    - name: /etc/nginx/sites-enabled
+    - makedirs: True
 
 kibana_config_js:
   file.managed:
@@ -94,17 +107,40 @@ elastic_conf:
     - contents: |+
           network.bind_host: 127.0.0.1
     - mode: 644
+    - require:
+      - file: elasticsearch_repo
 
 elastic_service:
+  pkg.installed:
+    - name: elasticsearch
+    - require:
+      - file: elastic_conf
   service.running:
     - name: elasticsearch
     - enable: True
     - watch:
       - file: elastic_conf
     - require:
-      - pkg: elasticsearch_soft
+      - pkg: elasticsearch
+
+logstash_service:
+  pkg.installed:
+  - name: logstash
+  - require:
+    - file: logstash_repo
+    - service: elasticsearch
+  service.running:
+    - name: logstash
+    - enable: True
 
 nginx_static_site:
+  pkg.installed:
+    - name: nginx
+    - require:
+      - file: nginx_static_site
+      - file: kibana_static_dir
+      - file: elastic_htpasswd
+
   service.running:
     - name: nginx
     - reload: True
@@ -113,13 +149,6 @@ nginx_static_site:
       - file: nginx_static_site
     - require:
       - service: elasticsearch
-
-  pkg.installed:
-    - name: nginx
-    - require:
-      - file: nginx_static_site
-      - file: kibana_static_dir
-      - file: elastic_htpasswd
 
   file.managed:
     - template: jinja
