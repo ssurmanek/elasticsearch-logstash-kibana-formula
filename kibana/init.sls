@@ -59,6 +59,7 @@ elastic_repos_key:
 {% set wwwhome = salt['pillar.get']('kibana:wwwhome', '/var/www') %}
 {% set kibana_wwwroot = wwwhome + '/' + server_name + '/' %}
 {% set elastic_htpasswd_file = '/etc/nginx/elastic_passwd' %}
+{% set bind_host = salt['pillar.get']('kibana:bind_host', '127.0.0.1') %}
 
 
 elasticsearch_soft:
@@ -93,6 +94,7 @@ kibana_config_js:
     - source: salt://kibana/config.js
     - context:
        kibana_port: {{ kibana_port }}
+       bind_host: {{ bind_host }}
 
 elastic_htpasswd:
   file.managed:
@@ -105,7 +107,7 @@ elastic_conf:
   file.managed:
     - name: '/etc/elasticsearch/elasticsearch.yml'
     - contents: |+
-          network.bind_host: 127.0.0.1
+          network.bind_host: {{ bind_host }}
     - mode: 644
     - require:
       - file: elasticsearch_repo
@@ -137,7 +139,7 @@ nginx_static_site:
   pkg.installed:
     - name: nginx
     - require:
-      - file: nginx_static_site
+      - file: nginx_sites_dir
       - file: kibana_static_dir
       - file: elastic_htpasswd
 
