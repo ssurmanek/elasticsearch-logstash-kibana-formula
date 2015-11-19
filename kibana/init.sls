@@ -42,7 +42,7 @@ elastic_repos_key:
 {% for soft, repo in {
   'elasticsearch': 'http://packages.elasticsearch.org/elasticsearch/1.3/debian',
   'logstash': 'http://packages.elasticsearch.org/logstash/1.4/debian',
-  }.iteritems() %}
+  }.items() %}
 {{ soft }}_repo:
   file.managed:
     - name: /etc/apt/sources.list.d/{{ soft }}.list
