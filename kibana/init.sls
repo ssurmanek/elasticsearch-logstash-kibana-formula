@@ -169,6 +169,7 @@ kibana:
     - source: https://download.elasticsearch.org/kibana/kibana/kibana-3.0.1.tar.gz
     - archive_format: tar
     - tar_options: xf
+    - source_hash: 'sha512=5bb4be27a1cabe8e0b3e20698a12ac52e15159077a73295e6170a30e8ff5f31c7a395797c2812936ad721b9472d19570c20c092c1a43f3954cd2c2149fb7ec44'
 
 # TODO:
 # * point config.js to port {{ kibana_port }} and not port 9200
