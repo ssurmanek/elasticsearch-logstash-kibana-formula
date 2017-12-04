@@ -93,7 +93,7 @@ kibana_config_js:
     - template: jinja
     - source: salt://kibana/config.js
     - context:
-       kibana_port: 80
+       kibana_port: {{ elastic_port }}
        bind_host: {{ bind_host }}
 
 elastic_htpasswd:
