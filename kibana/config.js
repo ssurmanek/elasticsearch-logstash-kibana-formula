@@ -29,7 +29,8 @@ function (Settings) {
      *  +elasticsearch: {server: "http://localhost:9200", withCredentials: true}+
      *
      */
-    elasticsearch: "http://{{ bind_host }}:{{ kibana_port }}",
+    //elasticsearch: "http://{{ bind_host }}:{{ kibana_port }}",
+    elasticsearch: {server: "http://localhost:9200", withCredentials: true},
 
     /** @scratch /configuration/config.js/5
      *
