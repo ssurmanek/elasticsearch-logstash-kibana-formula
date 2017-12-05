@@ -166,7 +166,7 @@ nginx_static_site:
 kibana:
   archive.extracted:
     - name: {{ kibana_wwwroot }}
-    - source: https://download.elasticsearch.org/kibana/kibana/kibana-3.0.1.tar.gz
+    - source: https://download.elasticsearch.org/kibana/kibana/kibana-3.1.2.tar.gz
     - archive_format: tar
     - options: xf
     - source_hash: 'sha512=3c4388ee40b4a57e79216c4dfbc53b93a2fe024bbac95cc573ed1bd1616867c806e43daf39e03723595e3d710fa1d0eea8ebd2575ce9143202b3fe3715a10201'
