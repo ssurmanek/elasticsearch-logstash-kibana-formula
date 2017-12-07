@@ -107,7 +107,7 @@ elastic_conf:
   file.managed:
     - name: '/etc/elasticsearch/elasticsearch.yml'
     - contents: |+
-          network.bind_host: {{ bind_host }}
+          http.cors.enabled: true
           network.bind_host: {{ bind_host }}
           http.cors.allow-origin: "http://{{ bind_host }}:8080"
 http.cors.enabled: true
